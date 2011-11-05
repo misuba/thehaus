@@ -24,6 +24,10 @@ class User < ActiveRecord::Base
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me
 
+  has_many :owned_groups, :class_name => "Group", :foreign_key => 'owner_id'
+
+  has_many :memberships
+  has_many :groups, :through => :memberships, :conditions => ["member_id = ?", self.id]
 
   #for testing
   def User.generate(stuf=Hash.new)
@@ -33,5 +37,10 @@ class User < ActiveRecord::Base
       :password => "f4rfarf",
       :password_confirmation => "f4rfarf"
     }.merge(stuf))
+  end
+  def User.generate!(stuf=Hash.new)
+    guy = self.generate(stuf)
+    guy.save
+    guy
   end
 end

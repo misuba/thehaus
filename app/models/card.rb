@@ -16,7 +16,8 @@ class Card < ActiveRecord::Base
   has_many :replies, :class_name => 'Card', :foreign_key => 'in_reply_to'
 
   # has_one :club
-  has_and_belongs_to_many :groups
+  has_many :group_sharings
+  has_many :groups, :through => :group_sharings
 
   validates_presence_of :title, :body, :user, :perms
   
@@ -29,6 +30,11 @@ class Card < ActiveRecord::Base
       :user => User.generate,
       :perms => 'all'
     }.merge(stuf))
+  end
+  def Card.generate!(stuf=Hash.new)
+    guy = self.generate(stuf)
+    guy.save
+    guy
   end
 
   ################################## DOWN TO BUSINESS ####################################
