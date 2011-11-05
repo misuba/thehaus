@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111102010217) do
+ActiveRecord::Schema.define(:version => 20111105004802) do
 
   create_table "cards", :force => true do |t|
     t.string   "title"
@@ -22,8 +22,30 @@ ActiveRecord::Schema.define(:version => 20111102010217) do
     t.integer  "in_reply_to"
   end
 
-# Could not dump table "dummy" because of following StandardError
-#   Unknown type 'id' for column 'int'
+  create_table "dummy", :id => false, :force => true do |t|
+    t.integer "dummy"
+  end
+
+  create_table "group_sharings", :force => true do |t|
+    t.integer  "group_id"
+    t.integer  "card_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "groups", :force => true do |t|
+    t.string   "name"
+    t.integer  "owner_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "memberships", :force => true do |t|
+    t.integer  "group_id"
+    t.integer  "member_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", :force => true do |t|
     t.string   "email",                                 :default => "", :null => false

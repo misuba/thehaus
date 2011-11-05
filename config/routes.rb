@@ -1,4 +1,6 @@
 Thehaus::Application.routes.draw do
+  resources :groups
+
   resources :cards
 
   devise_for :users

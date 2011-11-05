@@ -10,6 +10,7 @@ gem 'sqlite3'
 gem 'json'
 
 gem 'devise'
+gem 'redcarpet' #markdown
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -20,6 +21,9 @@ group :assets do
 end
 
 gem 'jquery-rails'
+
+gem 'shoulda'
+gem 'faker'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
