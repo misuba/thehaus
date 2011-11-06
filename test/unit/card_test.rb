@@ -4,12 +4,9 @@ class CardTest < ActiveSupport::TestCase
 
   def setup
     @abe = User.generate!(:username => 'Abe')
-    puts @abe.email
     @ben = User.generate!(:username => 'Ben')
-    puts @ben.email
     @cindy = User.generate!(:username => 'Cindy')
-    puts @cindy.email
-
+    
     @boysclub = Group.generate!(:user => @abe, :members => [@abe, @ben])
 
     @not_for_cindy = Card.generate!(:user => @abe, :perms => 'group', :groups => [@boysclub])
