@@ -39,21 +39,23 @@ class Card < ActiveRecord::Base
 
   ################################## DOWN TO BUSINESS ####################################
 
-  def Card.find_titles_for_user(searchstring, user)
+  def Card.find_titles_for_user(searchstring, usr)
     #Card.find_for_user user, "cards.title", ["cards.title LIKE '?'", searchstring]
-    found = Card.where("title like '?' and (perms = 'all' #{user.nil? ? "" : "or perms = 'users'"})", searchstring)
-    unless user.nil?
-      found << user.groups.collect {|grp| grp.cards.where("title like '?'", searchstring)}.flatten.uniq!
+    found = Card.where("title like ? and (perms = 'all' #{usr.nil? ? "" : "or perms = 'users'"})", "%#{searchstring}%")
+    unless usr.nil?
+      puts "here"
+      found += usr.groups.collect {|grp| grp.cards.where("title like ?", "%#{searchstring}%")}.flatten.uniq
     end
     found
     # MUCH too slow for autocomplete
   end
 
-  def Card.find_all_for_user(title, user)
+  def Card.find_all_for_user(title, usr)
     #Card.find_for_user user, "cards.*", ["cards.title = ?", title]
-    found = Card.where("title = ? and (perms = 'all' #{user.nil? ? "" : "or perms = 'users'"})", title)
-    unless user.nil?
-      found << user.groups.collect {|grp| grp.cards.where("title = ?", title)}.flatten.uniq!
+    found = Card.where("title = ? and (perms = 'all' #{usr.nil? ? "" : "or perms = 'users'"})", title)
+    unless usr.nil?
+      puts "here"
+      found += usr.groups.collect {|grp| grp.cards.where("title = ?", title)}.flatten.uniq
     end
     found
     # slow

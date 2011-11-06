@@ -12,15 +12,15 @@ class Group < ActiveRecord::Base
   has_many :cards, :through => :group_sharings
 
   has_many :memberships
-  has_many :members, :through => :memberships, :class_name => 'User', :foreign_key => 'member_id'
+  has_many :members, :through => :memberships, :source => :user
 
-  belongs_to :owner, :class_name => 'User'
+  belongs_to :user
 
   # for testing
   def Group.generate(stuf=Hash.new)
     self.new({
       :name => Faker::Company.name,
-      :owner => User.generate
+      :user => User.generate
     }.merge(stuf))
   end
   def Group.generate!(stuf=Hash.new)
