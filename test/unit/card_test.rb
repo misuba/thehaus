@@ -27,20 +27,20 @@ class CardTest < ActiveSupport::TestCase
 
     should "be addable to multiple groups"
 
-    should "be hideable via the 'none' perm"
+    should "be hideable by admins"
+
+    should "be hideable via the 'none' perm" do
       assert_equal Card.find_all_for_user(@not_for_anyone.title, @ben).length, 0
       assert_equal Card.find_all_for_user(@not_for_cindy.title, nil).length, 0
     end
 
-    should "still be visible by its creator no matter what"
+    should "still be visible by its creator no matter what" do
       assert_equal Card.find_all_for_user(@not_for_anyone.title, @cindy).length, 1
     end
 
-    should "be visible by the nil user when set to 'all' perms"
+    should "be visible by the nil user when set to all perms" do
       assert_equal Card.find_all_for_user(@hello_world.title, nil).length, 1
     end
-
-    should "be hideable by admins"
   end
 
   context "A card in a group" do
