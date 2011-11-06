@@ -1,5 +1,4 @@
-Inspired in part by [Everything2](http://everything2.com/) but with the sort  
-of fine-grained per-post permissions and user groups best known for appearing
+Inspired in part by [Everything2](http://everything2.com/) but with the sort of fine-grained per-post permissions and user groups best known for appearing
 in [LiveJournal](http://livejournal.com/) and [Google+](http://plus.google.com/). 
 
 Setup is straightforward if you are Rails 3-familiar. Bundle, tweak 
