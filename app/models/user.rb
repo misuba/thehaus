@@ -23,6 +23,9 @@ class User < ActiveRecord::Base
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me
+  attr_protected :username, :encrypted_password, :reset_password_token, :reset_password_sent_at,
+    :remember_created_at, :sign_in_count, :current_sign_in_at, :last_sign_in_at,
+    :current_sign_in_ip, :last_sign_in_ip
 
   has_many :owned_groups, :class_name => "Group", :foreign_key => 'owner_id'
 
@@ -31,8 +34,7 @@ class User < ActiveRecord::Base
 
   has_many :cards
 
-  validates_uniqueness_of :username, :email
-
+  validates :username, :email, :uniqueness => true, :presence => true
 
   #for testing
   def User.generate(stuf=Hash.new)
@@ -47,5 +49,34 @@ class User < ActiveRecord::Base
     guy = self.generate(stuf)
     guy.save
     guy
+  end
+
+  # we are the object-permissions clearing house
+  def can_read?(thing)
+    thing.readable_by? self
+  end
+  def can_create?(thing)
+    thing.creatable_by? self
+  end
+  def can_update?(thing)
+    thing.updatable_by? self
+  end
+  def can_destroy?(thing)
+    thing.destroyable_by? self
+  end
+
+  # altho we ourselves are a bit of a funny case for them all
+  def readable_by?(usr)
+    true
+    # !self.private_acct
+  end
+  def creatable_by?(usr)
+    false # devise's dept
+  end
+  def updatable_by?(usr)
+    usr == self
+  end
+  def destroyable_by?(usr)
+    false
   end
 end

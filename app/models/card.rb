@@ -19,8 +19,8 @@ class Card < ActiveRecord::Base
   has_many :group_sharings
   has_many :groups, :through => :group_sharings
 
-  validates_presence_of :title, :body, :user, :perms
-  
+  validates :title, :body, :user_id, :perms, :presence => true
+  validates :perms, :inclusion => {:in => %w{none all users groups}, :message => "must be none, all, users, or groups"}
 
   # for testing
   def Card.generate(stuf=Hash.new)
@@ -37,7 +37,38 @@ class Card < ActiveRecord::Base
     guy
   end
 
+
   ################################## DOWN TO BUSINESS ####################################
+
+  def readable_by?(usr)
+    return false if self.perms == 'none' and !updatable_by(usr)
+    return false if self.perms == 'users' and !creatable_by?(usr)
+    return true if self.perms == 'all'
+
+    basket = usr.groups.collect {|grp| grp.cards.where("id = ?", self.id)}.flatten
+    basket.length > 0
+  end
+
+  def creatable_by?(usr)
+    !usr.nil? and usr.is_a? User
+  end
+
+  def updatable_by?(usr)
+    usr = self.user
+  end
+
+  def destroyable_by?(usr)
+    updatable_by? usr
+  end
+
+  def groups=(grparr)
+    return false unless new_record?
+    grparr.each {|grp| self.add_group grp}
+  end
+
+  def add_group(grp)
+    self.group_sharings.build :group => grp
+  end
 
   def Card.find_titles_for_user(searchstring, usr)
     unless usr.nil?

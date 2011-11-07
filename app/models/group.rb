@@ -16,6 +16,9 @@ class Group < ActiveRecord::Base
 
   belongs_to :user
 
+  validates :user_id, :presence => true, :numericality => true
+  validates :name, :presence => true, :length => {:minimum => 3}
+
   # for testing
   def Group.generate(stuf=Hash.new)
     self.new({
@@ -29,4 +32,20 @@ class Group < ActiveRecord::Base
     guy
   end
   
+  def readable_by?(usr)
+    usr = user
+  end
+
+  def creatable_by?(usr)
+    !usr.nil? and usr.is_a? User
+  end
+
+  def updatable_by?(usr)
+    readable_by? usr
+  end
+
+  def destroyable_by?(usr)
+    readable_by? usr
+  end
+
 end
