@@ -22,8 +22,11 @@ end
 
 gem 'jquery-rails'
 
-gem 'shoulda'
-gem 'faker'
+group :test do
+  gem 'shoulda'
+  gem 'faker'
+  gem 'factory_girl_rails'
+end
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'

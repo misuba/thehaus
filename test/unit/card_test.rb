@@ -3,21 +3,25 @@ require 'test_helper'
 class CardTest < ActiveSupport::TestCase
 
   def setup
-    @abe = User.generate!(:username => 'Abe')
-    @ben = User.generate!(:username => 'Ben')
-    @cindy = User.generate!(:username => 'Cindy')
+    @abe = FactoryGirl.create(:user, :username => 'Abe')
+    @ben = FactoryGirl.create(:user, :username => 'Ben')
+    @cindy = FactoryGirl.create(:user, :username => 'Cindy')
     
-    @boysclub = Group.generate!(:user => @abe, :members => [@abe, @ben])
+    @boysclub = FactoryGirl.create(:group, :user => @abe)
+    @boysclub.memberships.create :user => @abe
+    @boysclub.memberships.create :user => @ben
 
-    @not_for_cindy = Card.generate!(:user => @abe, :perms => 'groups', :groups => [@boysclub])
+    @not_for_cindy = FactoryGirl.create(:card, :user => @abe, :perms => 'groups')
+    @not_for_cindy.group_sharings.create :group => @boysclub
+    
+    @not_for_anyone = FactoryGirl.create(:card, :user => @cindy, :perms => 'none')
 
-    @not_for_anyone = Card.generate!(:user => @cindy, :perms => 'none')
+    @hello_world = FactoryGirl.create(:card, :user => @ben, :perms => 'all')
 
-    @hello_world = Card.generate!(:user => @ben, :perms => 'all')
+    @all_the_young_dudes = FactoryGirl.create(:group, :user => @abe)
+    @all_the_young_dudes.memberships.create :user => FactoryGirl.create(:user)
 
-    @all_the_young_dudes = Group.generate!(:user => @abe, :members => [User.generate!])
-
-    @in_with_the_in_crowd = Card.generate!(:perms => 'users')
+    @in_with_the_in_crowd = FactoryGirl.create(:card, :perms => 'users')
   end
 
   context "A card" do
@@ -27,8 +31,8 @@ class CardTest < ActiveSupport::TestCase
     end
 
     should "be addable to multiple groups" do
-      @not_for_cindy.add_group @all_the_young_dudes
-      @not_for_cindy.save
+      @not_for_cindy.group_sharings.create! :group => @all_the_young_dudes
+      
       assert_equal 2, @not_for_cindy.groups.length
       assert_equal true, @not_for_cindy.readable_by?(@all_the_young_dudes.members[0])
     end

@@ -22,21 +22,6 @@ class Card < ActiveRecord::Base
   validates :title, :body, :user_id, :perms, :presence => true
   validates :perms, :inclusion => {:in => %w{none all users groups}, :message => "must be none, all, users, or groups"}
 
-  # for testing
-  def Card.generate(stuf=Hash.new)
-    self.new({
-      :title => Faker::Company.bs, 
-      :body => Faker::Lorem.paragraphs.join("\n\n"),
-      :user => User.generate,
-      :perms => 'all'
-    }.merge(stuf))
-  end
-  def Card.generate!(stuf=Hash.new)
-    guy = self.generate(stuf)
-    guy.save
-    guy
-  end
-
 
   ################################## DOWN TO BUSINESS ####################################
 
@@ -45,7 +30,7 @@ class Card < ActiveRecord::Base
     return false if self.perms == 'users' and !creatable_by?(usr)
     return true if self.perms == 'all'
 
-    basket = usr.groups.collect {|grp| grp.cards.where("id = ?", self.id)}.flatten
+    basket = usr.groups.collect {|grp| grp.cards.where("cards.id = ?", self.id)}.flatten
     basket.length > 0
   end
 
@@ -61,14 +46,14 @@ class Card < ActiveRecord::Base
     updatable_by? usr
   end
 
-  def groups=(grparr)
-    return false unless new_record?
-    grparr.each {|grp| self.add_group grp}
-  end
+  #def groups=(grparr)
+  #  return false unless new_record?
+  #  grparr.each {|grp| self.add_group grp}
+  #end
 
-  def add_group(grp)
-    self.group_sharings.build :group => grp
-  end
+  #def add_group(grp)
+  #  self.group_sharings.build :group => grp
+  #end
 
   def Card.find_titles_for_user(searchstring, usr)
     unless usr.nil?

@@ -3,7 +3,7 @@ require 'faker'
 class Group < ActiveRecord::Base
   #create_table "groups", :force => true do |t|
   #  t.string   "name"
-  #  t.integer  "owner_id"
+  #  t.integer  "user_id"
   #  t.datetime "created_at"
   #  t.datetime "updated_at"
   #end
@@ -19,19 +19,6 @@ class Group < ActiveRecord::Base
   validates :user_id, :presence => true, :numericality => true
   validates :name, :presence => true, :length => {:minimum => 3}
 
-  # for testing
-  def Group.generate(stuf=Hash.new)
-    self.new({
-      :name => Faker::Company.name,
-      :user => User.generate
-    }.merge(stuf))
-  end
-  def Group.generate!(stuf=Hash.new)
-    guy = self.generate(stuf)
-    guy.save
-    guy
-  end
-  
   def readable_by?(usr)
     usr = user
   end

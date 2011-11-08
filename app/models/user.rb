@@ -36,20 +36,6 @@ class User < ActiveRecord::Base
 
   validates :username, :email, :uniqueness => true, :presence => true
 
-  #for testing
-  def User.generate(stuf=Hash.new)
-    self.new({
-      :username => Faker::Internet.user_name,
-      :email => Faker::Internet.email,
-      :password => "f4rfarf",
-      :password_confirmation => "f4rfarf"
-    }.merge(stuf))
-  end
-  def User.generate!(stuf=Hash.new)
-    guy = self.generate(stuf)
-    guy.save
-    guy
-  end
 
   # we are the object-permissions clearing house
   def can_read?(thing)
