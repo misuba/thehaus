@@ -22,8 +22,8 @@ class GroupTest < ActiveSupport::TestCase
 
     should "not be addable to a card created by someone not the group's owner" do
       @not_for_cindy.group_sharings.create :group => @cindyspeeps
-      assert_equal @not_for_cindy.groups.length, 1
-      assert_equal @not_for_cindy.groups[0], @boysclub
+      assert_equal 1, @not_for_cindy.groups.length
+      assert_equal @boysclub, @not_for_cindy.groups[0]
     end
 
     should "add a given user only once" 

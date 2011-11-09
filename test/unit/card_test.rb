@@ -47,8 +47,9 @@ class CardTest < ActiveSupport::TestCase
     end
 
     should "not be visible to the nil user when set to users perms" do
-      usrlocal = %{@abe @ben @cindy}
-      assert_equal true, @in_with_the_in_crowd.readable_by?(usrlocal[rand(usrlocal.length)])
+      [@abe, @ben, @cindy].each do |peep|
+        assert_equal true, @in_with_the_in_crowd.readable_by?(peep)
+      end
       assert_equal false, @in_with_the_in_crowd.readable_by?(nil)
     end
 

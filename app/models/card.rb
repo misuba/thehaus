@@ -26,12 +26,12 @@ class Card < ActiveRecord::Base
   ################################## DOWN TO BUSINESS ####################################
 
   def readable_by?(usr)
-    return false if self.perms == 'none' and !updatable_by(usr)
-    return false if self.perms == 'users' and !creatable_by?(usr)
+    return updatable_by?(usr) if self.perms == 'none'
+    return creatable_by?(usr) if self.perms == 'users'
     return true if self.perms == 'all'
 
     basket = usr.groups.collect {|grp| grp.cards.where("cards.id = ?", self.id)}.flatten
-    basket.length > 0
+    basket.length > 0 ? true : false
   end
 
   def creatable_by?(usr)
@@ -39,7 +39,7 @@ class Card < ActiveRecord::Base
   end
 
   def updatable_by?(usr)
-    usr = self.user
+    usr == self.user
   end
 
   def destroyable_by?(usr)
